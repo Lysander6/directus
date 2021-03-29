@@ -48,7 +48,7 @@ export function usePopper(
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			popperInstance.value = createPopper(reference.value!, popper.value!, {
 				placement: options.value.attached ? 'bottom-start' : options.value.placement,
-				modifiers: getModifiers(resolve),
+				modifiers: getModifiers(resolve as () => void),
 				strategy: 'fixed',
 			});
 			popperInstance.value.forceUpdate();
