@@ -258,6 +258,12 @@ router.get(
 
 		req.session?.destroy(() => {});
 
+		const userService = new UsersService({ schema: req.schema });
+		const accountExists = await userService.emailHasAccount(email);
+		if (!accountExists) {
+			await userService.create({ email, status: 'active' });
+		}
+
 		const { accessToken, refreshToken, expires } = await authenticationService.authenticate({
 			email,
 		});
