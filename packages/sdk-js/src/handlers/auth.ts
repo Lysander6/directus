@@ -88,12 +88,13 @@ export class AuthHandler {
 		this.removeTimeout();
 
 		this.expiresAt = await this.storage.getItem('directus_access_token_expires');
-		if (!this.expiresAt) return;
 
-		if (Date.now() + 10000 < this.expiresAt && this.autoRefresh) {
-			this.autoRefreshTimeout = setTimeout(() => this.refresh(false), this.expiresAt - Date.now() - 10000);
-			if (!isInitialInvoke) {
-				return;
+		if (this.expiresAt) {
+			if (Date.now() + 10000 < this.expiresAt && this.autoRefresh) {
+				this.autoRefreshTimeout = setTimeout(() => this.refresh(false), this.expiresAt - Date.now() - 10000);
+				if (!isInitialInvoke) {
+					return;
+				}
 			}
 		}
 
@@ -104,7 +105,7 @@ export class AuthHandler {
 			payload['refresh_token'] = refreshToken;
 		}
 
-		if (this.expiresAt < Date.now() + 1000) {
+		if (this.expiresAt && this.expiresAt < Date.now() + 1000) {
 			this.token = null;
 		}
 		const response = await this.axios
